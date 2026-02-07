@@ -51,10 +51,15 @@ The extension is designed for **individual use**, prioritizing reliability, tran
 The project follows a modular browser-extension architecture:
 
 ├── manifest.json # Chrome Extension configuration (MV3)
+
 ├── background.js # Service worker for async generation + logging
+
 ├── sidepanel.html # UI layout
+
 ├── sidepanel.js # UI logic and state management
+
 ├── content.js # Job description scraping
+
 └── apps-script/ # Google Apps Script backend (Sheets + Docs)
 
 
