@@ -86,13 +86,110 @@ No frameworks are used intentionally to keep the extension lightweight and audit
 
 ## Installation (Development)
 
-1. Clone the repository
-2. Open Chrome and navigate to `chrome://extensions`
-3. Enable **Developer Mode**
-4. Click **Load unpacked**
-5. Select the project root directory
-6. Configure your Gemini API key in the extension UI
-7. Deploy the provided Apps Script as a Web App
+### Google Sheets + Google Apps Script (GAS) Setup
+
+Career Copilot uses a Google Spreadsheet + a deployed Google Apps Script Web App to:
+- fetch master resume inputs (Google Docs)
+- log job applications into a tracker sheet
+- return a daily application count for the UI
+
+This setup is intentionally lightweight and requires no external backend.
+
+---
+
+#### 1) Create the Spreadsheet Tabs
+
+Create a Google Spreadsheet with **two tabs**:
+
+##### A. `Tracker` tab
+Create a sheet named **`Tracker`** with the following header row in **Row 1**:
+
+| Date | Company | Position | Status | Notes | URL |
+|------|---------|----------|--------|-------|-----|
+
+Notes:
+- The **URL must be in column F**. Duplicate detection is performed using this column.
+- Rows are treated as data starting from **Row 2** (Row 1 is reserved for headers).
+- URLs are normalized before storage (query parameters removed, trailing slash removed).
+
+##### B. `Config` tab
+Create a sheet named **`Config`** and set the following values:
+
+- Cell **B1**: **Resume Doc ID** (Google Doc file ID)
+- Cell **B2**: **Detailed Experience Doc ID** (Google Doc file ID)
+- Cell **B3**: **Project Format** (plain text template)
+
+These are read by the Apps Script exactly by cell location.
+
+---
+
+#### 2) Prepare the Google Docs
+
+Career Copilot expects two inputs stored as **native Google Docs**:
+
+- **Master Resume (Skeleton)**: your curated baseline resume
+- **Detailed Experience**: expanded context, metrics, and supporting detail
+
+Important:
+- These must be **Google Docs**, not PDF or `.docx`, since Apps Script reads them using `DocumentApp`.
+
+To obtain a Doc ID:
+- Open the Google Doc
+- Copy the string between `/d/` and `/edit` in the URL
+
+---
+
+#### 3) Install the Apps Script into the Spreadsheet
+
+1. Open the Spreadsheet
+2. Go to **Extensions → Apps Script**
+3. Paste the provided Apps Script code (unchanged)
+4. Confirm the sheet name constants match your tabs:
+   - `TRACKER_SHEET_NAME = "Tracker"`
+   - `CONFIG_SHEET_NAME = "Config"`
+
+---
+
+#### 4) Deploy as a Web App
+
+1. In Apps Script, select **Deploy → New deployment**
+2. Choose **Web app**
+3. Set:
+   - **Execute as:** *Me*
+   - **Who has access:** *Anyone*
+4. Deploy and complete the authorization prompts
+5. Copy the Web App URL (this will be used as the backend endpoint)
+
+---
+
+#### 5) Point the Chrome Extension to the GAS Web App
+
+In the extension code, set `GAS_URL` to your deployed Web App URL.
+
+Example:
+- `background.js` uses `GAS_URL` for job logging (`POST`) and document loading (`GET`).
+
+After updating, reload the extension in:
+- `chrome://extensions` → **Reload**
+
+---
+
+#### 6) Verify End-to-End
+
+In the extension side panel:
+1. Click **Load Documents**  
+   - This should update the docs status indicator and populate the daily count.
+2. Navigate to a job posting page.
+3. Click **Generate Resume**
+4. Click **Log / Update** to write the application row into the `Tracker` tab.
+
+---
+
+### Security Notes
+
+- Your Gemini API key is stored locally using `chrome.storage.local`.
+- Do not commit personal sheet URLs, document IDs, or API keys to public source control.
+- If publishing the repository, consider using placeholder values and a local-only configuration step.
 
 ---
 
