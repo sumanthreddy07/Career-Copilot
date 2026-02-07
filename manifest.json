@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Career Copilot",
+  "version": "1.0",
+  "description": "Log Jobs to Sheets and tailor resumes with Gemini API.",
+  "permissions": ["sidePanel", "storage", "activeTab", "scripting"],
+  "background": { "service_worker": "background.js" },
+  "action": {
+    "default_title": "Open Career Copilot"
+  },
+  "side_panel": { "default_path": "sidepanel.html" },
+  "content_scripts": [{ "matches": ["<all_urls>"], "js": ["content.js"] }]
+}

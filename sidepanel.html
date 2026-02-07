@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: 'Segoe UI', Roboto, sans-serif; padding: 15px; background: #f8f9fa; color: #202124; }
+    
+    /* INPUTS */
+    input, textarea, select { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #dadce0; border-radius: 4px; box-sizing: border-box; font-size: 13px; }
+    label { font-size: 11px; font-weight: 700; color: #5f6368; margin-top: 10px; display: block; }
+    
+    /* HEADER */
+    h3 { margin: 0 0 15px 0; display: flex; justify-content: space-between; align-items: center; color: #202124; }
+    .count-badge { font-size: 12px; background: #e8f0fe; color: #1967d2; padding: 2px 8px; border-radius: 12px; }
+
+    /* BUTTONS */
+    button { width: 100%; padding: 10px; border: none; border-radius: 4px; font-weight: 600; cursor: pointer; margin-top: 10px; font-size: 13px; transition: 0.2s; }
+    
+    #loadDocsBtn { background: #e8eaed; color: #3c4043; border: 1px solid #dadce0; }
+    #loadDocsBtn:hover { background: #dadce0; }
+
+    #logBtn { background: #1e8e3e; color: white; } /* Green */
+    #logBtn:hover { background: #188038; }
+
+    #tailorBtn { background: #1a73e8; color: white; } /* Blue */
+    #tailorBtn:hover { background: #1557b0; }
+
+    /* STATUS LINES */
+    .meta-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 11px; color: #5f6368; }
+    #docStatus { font-weight: bold; }
+
+    /* CARDS */
+    .card { background: white; padding: 12px; margin-top: 10px; border: 1px solid #dadce0; border-radius: 8px; cursor: pointer; position: relative; }
+    .card:hover { border-color: #1a73e8; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+    .badge { float: right; font-size: 10px; background: #e6f4ea; padding: 2px 6px; border-radius: 4px; color: #137333; font-weight: bold; }
+    .copy-hint { font-size: 10px; color: #9aa0a6; position: absolute; bottom: 5px; right: 10px; opacity: 0; transition: opacity 0.2s; }
+    .card:hover .copy-hint { opacity: 1; }
+
+    #status { text-align: center; margin-top: 10px; font-size: 12px; font-weight: bold; min-height: 20px; }
+    /* ✅ THIS IS THE MISSING ELEMENT THAT CAUSED THE CRASH */
+    #genTime { text-align: center; font-size: 10px; color: #888; margin-bottom: 10px; min-height: 15px; }
+    
+    .error { color: #d93025; } .success { color: #1e8e3e; }
+    #settings { display: none; background: #fce8e6; padding: 10px; border: 1px solid #c5221f; margin-bottom: 10px; border-radius: 4px; }
+    /* Add this inside your <style> tag */
+
+    /* Visual style for the "Reasoning" text */
+    .reasoning-text {
+      font-size: 10px; 
+      color: #5f6368; 
+      margin-top: 6px; 
+      font-style: italic; 
+      border-left: 2px solid #ddd; 
+      padding-left: 6px;
+    }
+
+    /* Specific style for "Preserved" badges */
+    .badge-preserved {
+      background: #f1f3f4; 
+      color: #3c4043; 
+      border: 1px solid #dadce0;
+    }
+</style>
+</head>
+<body>
+
+  <div id="settings">
+    <label style="color:#c5221f; margin-top:0;">⚠️ API Key Missing</label>
+    <input type="password" id="apiKey" placeholder="Paste Gemini Key Here">
+    <button id="saveKey" style="background:#c5221f; color:white; margin-top:5px;">Save Key</button>
+  </div>
+
+  <h3>Career Copilot <span id="count" class="count-badge">Total: ...</span></h3>
+
+  <div class="meta-row">
+    <span id="docStatus">Docs: ❌ Not Loaded</span>
+  </div>
+  <button id="loadDocsBtn">🔄 Load Documents (Resume & Details)</button>
+
+  <div style="display:flex; gap:10px; margin-top:10px;">
+    <div style="flex:1"><label>Company</label><input id="comp"></div>
+    <div style="flex:1"><label>Status</label><select id="stat"><option>Applied</option><option>Interview</option><option>Offer</option><option>Rejected</option></select></div>
+  </div>
+
+  <label>Position</label><input id="pos" value="Software Engineer">
+  <label>Job Description</label><textarea id="jd" style="height:80px; font-family:monospace; font-size:11px;"></textarea>
+  <label>Notes</label><input id="note">
+
+  <button id="logBtn">💾 Log / Update</button>
+  <button id="tailorBtn">✨ Generate Resume</button>
+
+  <div id="status"></div>
+  <div id="genTime" style="text-align:center; font-size:10px; color:#999; margin-bottom:10px; min-height:12px;"></div>
+  <div id="results"></div>
+
+  <script src="sidepanel.js"></script>
+</body>
+</html>
