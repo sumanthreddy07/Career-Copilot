@@ -1,0 +1,156 @@
+const TRACKER_SHEET_NAME = "Tracker";
+const CONFIG_SHEET_NAME = "Config";
+
+function doPost(e) {
+  try {
+    // 1. Parse Incoming Data
+    var data = JSON.parse(e.postData.contents);
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName(TRACKER_SHEET_NAME); // ✅ always Tracker
+    if (!sheet) throw new Error("Missing Tracker sheet");
+
+
+    // --- STEP 1: INTELLIGENT URL CLEANING ---
+    var rawUrl = data.url || "";
+    // Logic: Split by '?' to remove params, then replace trailing '/' to standardize
+    var cleanUrl = rawUrl.split('?')[0].replace(/\/$/, "").trim();
+
+    /// --- STEP 2: CHECK FOR DUPLICATES (BASED ON URL) ---
+    var lastRow = sheet.getLastRow();
+
+    if (lastRow > 1) {
+      // Read only URL column (F)
+      var urlValues = sheet.getRange(2, 6, lastRow - 1, 1).getValues();
+
+      for (var i = 0; i < urlValues.length; i++) {
+        var existingUrlRaw = urlValues[i][0] || "";
+        var existingUrlClean = existingUrlRaw
+          .toString()
+          .split('?')[0]
+          .replace(/\/$/, "")
+          .trim();
+
+        if (cleanUrl !== "" && existingUrlClean === cleanUrl) {
+
+          // Fetch date from column A of the matching row
+          var appliedDate = sheet.getRange(i + 2, 1).getValue();
+          var formattedDate = "Unknown Date";
+
+          if (appliedDate) {
+            try {
+              formattedDate = Utilities.formatDate(
+                new Date(appliedDate),
+                Session.getScriptTimeZone(),
+                "MMM dd, yyyy"
+              );
+            } catch (err) {
+              formattedDate = appliedDate;
+            }
+          }
+
+          return jsonResponse({
+            result: "duplicate",
+            date: formattedDate
+          });
+        }
+      }
+    }
+
+
+    // --- STEP 3: APPEND NEW ROW ---
+    // Structure: [Date, Company, Position, Status, Notes, URL]
+    // Insert a new row just below the header
+    sheet.insertRowBefore(2);
+
+    // Write the values into row 2
+    sheet.getRange(2, 1, 1, 6).setValues([[
+      data.applyDate,
+      data.company,
+      data.position,
+      data.status,
+      data.notes,
+      cleanUrl
+    ]]);
+
+    // --- STEP 4: CALCULATE TODAY'S COUNT ---
+    var today = new Date();
+    var todayStr = Utilities.formatDate(today, Session.getScriptTimeZone(), "yyyy-MM-dd");
+    var todayCount = 0;
+    
+    // Re-fetch values to include the new row
+    var newRows = sheet.getDataRange().getValues();
+    
+    for (var i = 1; i < newRows.length; i++) {
+      // Check Column A (Date)
+      var rowDate = newRows[i][0];
+      if (rowDate) {
+        var rowDateStr = Utilities.formatDate(new Date(rowDate), Session.getScriptTimeZone(), "yyyy-MM-dd");
+        if (rowDateStr === todayStr) {
+          todayCount++;
+        }
+      }
+    }
+
+    return ContentService.createTextOutput(JSON.stringify({
+      "result": "success",
+      "todayCount": todayCount
+    })).setMimeType(ContentService.MimeType.JSON);
+
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({
+      "result": "error",
+      "error": error.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet(e) {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const config = ss.getSheetByName(CONFIG_SHEET_NAME);
+    const tracker = ss.getSheetByName(TRACKER_SHEET_NAME);
+    
+    // Checks Config
+    if (!config) return jsonResponse({ error: "Missing Config Tab", todayCount: 0 });
+
+    const rID = config.getRange("B1").getValue();
+    const dID = config.getRange("B2").getValue();
+    const fmt = config.getRange("B3").getValue();
+
+    // Fetches Docs
+    let resume = "";
+    let details = "";
+    if (rID && rID.length > 10) resume = DocumentApp.openById(rID).getBody().getText();
+    if (dID && dID.length > 10) details = DocumentApp.openById(dID).getBody().getText();
+    
+    // Returns Everything
+    return jsonResponse({
+      todayCount: getTodayCount(tracker),
+      masterResume: resume,
+      detailedExperience: details,
+      projectFormat: fmt
+    });
+
+  } catch (e) {
+    // Returns 0 on error so UI doesn't break
+    return jsonResponse({ error: e.toString(), todayCount: 0 });
+  }
+}
+function getTodayCount(sheet) {
+  if (!sheet || sheet.getLastRow() <= 1) return 0; // Fix for empty sheet
+  const data = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1).getValues();
+  const today = new Date().toLocaleDateString('en-CA');
+  return data.filter(r => {
+    try { return new Date(r[0]).toLocaleDateString('en-CA') === today; } catch(e){return false;}
+  }).length;
+}
+
+function jsonResponse(data) {
+  return ContentService.createTextOutput(JSON.stringify(data)).setMimeType(ContentService.MimeType.JSON);
+}
+
+
+function forceAuth() {
+  // No try-catch blocks here. This will force the popup!
+  DocumentApp.create("Temporary Auth Doc");
+}
