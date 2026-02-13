@@ -17,6 +17,10 @@ STRICT INSTRUCTIONS:
    Before rewriting any bullet point, evaluate the existing bullet from the MASTER RESUME.
    * If the existing bullet already scores >85/100 for the JD (contains necessary keywords, strong metrics, and clear impact), PRESERVE IT exactly as is.
    * Only rewrite if the bullet lacks specific JD keywords, lacks impact, or is weak/passive.
+   * Ensure every work experience includes high-impact, advanced projects that are realistic and relevant to the company and role.
+   * Do not dump the job description into the resume. The rewritten experience must align with the exact responsibilities and qualifications mentioned in the job description, but it should not look forced or like I copied and pasted keywords. 
+   * Every bullet point must be interview-explainable (STAR-ready), meaning it should feel like a real story I can confidently explain end-to-end. 
+   * 
 
 2. . NARRATIVE FLOW & ORDERING:
    * Do not provide a random list of "good points."
@@ -27,7 +31,8 @@ STRICT INSTRUCTIONS:
    * Ensure the transition between bullet points is non-repetitive and paints a complete picture of the candidate.
 
 3. KEYWORD OPTIMIZATION:
-   For points that require rewriting, naturally incorporate at least 80% of the high-value keywords (hard skills, soft skills, and domain terminology) found in the JD into the resume.
+   * For points that require rewriting, naturally incorporate at least 80% of the high-value keywords (hard skills, soft skills, and domain terminology) found in the JD into the resume.
+   * Modify all my experience roles to strongly align with the job description, responsibilities, and required skills of the role I provide. 
 
 4. ATS COMPLIANCE & FORMATTING:
    * You will be using a A4 Sheet with 1/2 inch border on left and right.
@@ -37,27 +42,32 @@ STRICT INSTRUCTIONS:
    * Avoid "orphan words" (single words on a new line).
    * Ensure zero usage of personal pronouns (I, me, my).
    * Ensure the tone is human, professional, and not robotic gibberish.
+   * Use ATS keyword strategy: 
+     - If the job description says “design”, use design 
+     - If it says “implemented”, use implemented 
+     - If it says “developed”, use developed, etc. 
+     - Mirror the exact wording naturally inside the bullets. 
+     
+5. DELIVERABLES:
+  Part A: Microsoft Experience
+  * Requirement: I need 6 "PRIMARY" final bullet points.
+  * Your Task: Generate 6+3 distinct bullet points based on my Microsoft experience. The Bottom 3 are "ALTERNATIVE". For each ALTERNATIVE, you must identify which PRIMARY point it effectively replaces (e.g., if Primary #2 is weak, the Alternative replaces #2).
+  * Rating System: Order them in descending order. For each point, provide a rating [Score: X/100] indicating how well it targets the JD and the potential impact, followed by a list of keywords responsible for why it got that score.
+  * Example Output: "Spearheaded the migration of X... [Score: 95/100] - #Keyword1 #Keyword2 #Keyword3"
 
-4. DELIVERABLES:
-Part A: Microsoft Experience
-* Requirement: I need 6 "PRIMARY" final bullet points.
-* Your Task: Generate 6+3 distinct bullet points based on my Microsoft experience. The Bottom 3 are "ALTERNATIVE". For each ALTERNATIVE, you must identify which PRIMARY point it effectively replaces (e.g., if Primary #2 is weak, the Alternative replaces #2).
-* Rating System: For each point, provide a rating [Score: X/100] indicating how well it targets the JD, followed by a list of keywords responsible for why it got that score.
-* Example Output: "Spearheaded the migration of X... [Score: 95/100] - #Keyword1 #Keyword2 #Keyword3"
+  Part B: Wells Fargo Experience
+  * Requirement: I need 3 "PRIMARY" final bullet points.
+  * Your Task: Generate 3+2 distinct bullet points based on my Microsoft experience. The Bottom 2 are "ALTERNATIVE". For each ALTERNATIVE, you must identify which PRIMARY point it effectively replaces (e.g., if Primary #2 is weak, the Alternative replaces #2).
+  * Rating System Same as above (Rate out of 100 with keywords).
 
-Part B: Wells Fargo Experience
-* Requirement: I need 3 "PRIMARY" final bullet points.
-* Your Task: Generate 3+2 distinct bullet points based on my Microsoft experience. The Bottom 2 are "ALTERNATIVE". For each ALTERNATIVE, you must identify which PRIMARY point it effectively replaces (e.g., if Primary #2 is weak, the Alternative replaces #2).
-* Rating System Same as above (Rate out of 100 with keywords).
+  Part C: Projects
+  * Select my best 6 projects that align with the JD.
+  * Rewrite them following the PROJECT FORMAT provided in the Inputs section.
+  * Rating System Same as above (Rate out of 100 with keywords).
 
-Part C: Projects
-* Select my best 4 projects that align with the JD.
-* Rewrite them following the PROJECT FORMAT provided in the Inputs section.
-* Rating System Same as above (Rate out of 100 with keywords).
-
-Part D: Strategic Additions
-* Suggest 3-4 specific additions or tweaks to the resume (e.g., certifications, specific skill groupings) that would significantly increase hiring chances for this specific JD.
-* Rate each suggestion out of 100 based on potential impact.
+  Part D: Strategic Additions
+  * Suggest 3-4 specific additions or tweaks to the resume (e.g., certifications, specific skill groupings) that would significantly increase hiring chances for this specific JD.
+  * Rating System Same as above (Rate out of 100 with keywords).
 
 Output: JSON Only.
 Schema: 

@@ -66,7 +66,7 @@ async function processGeneration(data) {
 
     // Timeout Controller
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 60000);
+    const timeoutId = setTimeout(() => controller.abort(), 120000);
 
     const response = await fetch(MODEL_URL, {
       method: "POST",
